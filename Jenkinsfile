@@ -4,11 +4,12 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '20'))
         disableConcurrentBuilds()
     }
+    environment {
+        app
+        registryCredential = 'leibniz9999_id'
+    }
 
     stages {
-
-        def app
-        def registryCredential = 'leibniz9999_id'
 
         stage('Clone repository') {
             steps {
