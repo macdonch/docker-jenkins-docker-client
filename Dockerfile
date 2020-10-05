@@ -48,6 +48,7 @@ USER root
 COPY entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/entrypoint.sh"]
 # add insecure registries and other daemon.json settings
+RUN mkdir /etc/docker
 COPY daemon.json /etc/docker/daemon.json
 
 RUN apk --no-cache add shadow su-exec
