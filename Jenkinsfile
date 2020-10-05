@@ -1,47 +1,38 @@
-pipeline {
-    agent any
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '20'))
-        disableConcurrentBuilds()
+node {
+
+    def app
+    def registryCredential = 'leibniz9999_id'
+
+    stage('Clone repository') {
+        steps {
+            /* repository is defined in the Jenkins pipeline */
+
+            checkout scm
+        }
     }
-    environment {
-        app = ''
-        registryCredential = 'leibniz9999_id'
+
+    stage('Build Docker Image') {
+        steps {
+            app = docker.build("leibniz9999/jenkins-docker-client-lab")
+        }  
     }
 
-    stages {
-
-        stage('Clone repository') {
-            steps {
-                /* repository is defined in the Jenkins pipeline */
-
-                checkout scm
+    stage('Test image') {
+        steps {
+            app.inside {
+                sh 'echo "Tests passed"'
             }
         }
+    }
 
-        stage('Build Docker Image') {
-            steps {
-                app = docker.build("leibniz9999/jenkins-docker-client-lab")
-            }  
-        }
+    stage('Push image') {
 
-        stage('Test image') {
-            steps {
-                app.inside {
-                    sh 'echo "Tests passed"'
-                }
+        steps {
+
+            docker.withRegistry('', registryCredential) {
+                app.push("latest")
             }
-        }
 
-        stage('Push image') {
-
-            steps {
-
-                docker.withRegistry('', registryCredential) {
-                    app.push("latest")
-                }
-
-            }
         }
     }
 }
