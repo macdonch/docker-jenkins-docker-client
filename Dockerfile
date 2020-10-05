@@ -41,19 +41,18 @@ RUN cd /code/compose && \
 
 FROM jenkins/jenkins:alpine
 
-MAINTAINER trion development GmbH "info@trion.de"
+MAINTAINER Charles Macdonald "charles.macdonald@telus.com"
 
 ENV JENKINS_USER=jenkins
 USER root
 COPY entrypoint.sh /usr/local/bin/
-# add insecure registries and other daemon.json settings
-COPY ./daemon.json /etc/docker/daemon.json
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/entrypoint.sh"]
+# add insecure registries and other daemon.json settings
+COPY daemon.json /etc/docker/daemon.json
+
 RUN apk --no-cache add shadow su-exec
 
 COPY --from=cmps /usr/local/bin/docker-compose /usr/bin/docker-compose
 RUN  \
   curl https://download.docker.com/linux/static/stable/x86_64/docker-19.03.12.tgz | tar xvz -C /tmp/ && \
   mv /tmp/docker/docker /usr/bin/docker
-
-
