@@ -5,7 +5,7 @@ pipeline {
         disableConcurrentBuilds()
     }
     environment {
-        app
+        app = ''
         registryCredential = 'leibniz9999_id'
     }
 
