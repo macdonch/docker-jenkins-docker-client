@@ -46,11 +46,10 @@ MAINTAINER trion development GmbH "info@trion.de"
 ENV JENKINS_USER=jenkins
 USER root
 COPY entrypoint.sh /usr/local/bin/
+# add insecure registries and other daemon.json settings
+COPY ./daemon.json /etc/docker/daemon.json
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/entrypoint.sh"]
 RUN apk --no-cache add shadow su-exec
-
-# add insecure registries and other daemon.json settings
-COPY daemon.json /etc/docker/daemon.json
 
 COPY --from=cmps /usr/local/bin/docker-compose /usr/bin/docker-compose
 RUN  \
